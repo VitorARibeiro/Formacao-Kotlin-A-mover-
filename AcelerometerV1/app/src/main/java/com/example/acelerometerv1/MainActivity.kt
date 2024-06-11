@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.SeekBar
 import android.widget.TextView
+import com.airbnb.lottie.LottieAnimationView
 import com.github.anastr.speedviewlib.PointerSpeedometer
 
 
@@ -12,6 +13,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var pointerSpeedometer : PointerSpeedometer
     private lateinit var seekBar: SeekBar
     private lateinit var seekBarValue: TextView
+    private lateinit var animationView: LottieAnimationView
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -21,7 +24,13 @@ class MainActivity : AppCompatActivity() {
         pointerSpeedometer = findViewById(R.id.pointerSpeedometer)
         seekBar = findViewById(R.id.seekBar)
         seekBarValue = findViewById(R.id.seekBarValue)
+        animationView = findViewById(R.id.animationView)
+
+        //Remover o tremble do acelerador
         pointerSpeedometer.withTremble = false;
+        //esta linha esta a crashar o codigo
+        animationView.playAnimation()
+
 
         // Set a listener to the SeekBar to update the SpeedView and display the value
         seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
@@ -31,10 +40,16 @@ class MainActivity : AppCompatActivity() {
 
                 // Display the SeekBar value
                 seekBarValue.text = getString(R.string.seek_bar_value, progress)
+
+
+
+
+
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar?) {
                 // Not needed for this implementation
+
             }
 
             override fun onStopTrackingTouch(seekBar: SeekBar?) {

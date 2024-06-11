@@ -37,6 +37,7 @@ android {
 }
 
 dependencies {
+    implementation (libs.lottie)
     implementation (libs.speedviewlib)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
