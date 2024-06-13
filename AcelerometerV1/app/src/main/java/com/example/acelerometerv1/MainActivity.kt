@@ -15,6 +15,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var seekBar: SeekBar
     private lateinit var seekBarValue: TextView
     private lateinit var animationView: LottieAnimationView
+    private var slowdownAnimator: ValueAnimator? = null
 
 
 
@@ -29,7 +30,8 @@ class MainActivity : AppCompatActivity() {
 
         //Remover o tremble do acelerador
         pointerSpeedometer.withTremble = false;
-
+        animationView.speed = 0f
+        animationView.playAnimation()
 
 
 
@@ -43,8 +45,8 @@ class MainActivity : AppCompatActivity() {
                 seekBarValue.text = getString(R.string.seek_bar_value, progress)
 
                 if(progress != 0) {
-                    animationView.resumeAnimation()
-                    animationView.speed = (progress * 0.02).toFloat()
+
+                    accelerateAnimation((progress * 0.02).toFloat())
                 }else{
                     pauseAnimationWithSlowdown()
 
@@ -66,17 +68,35 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun pauseAnimationWithSlowdown() {
+        // Cancel any ongoing slowdown animation
+        slowdownAnimator?.cancel()
+
+        // Capture the current speed
+        val currentSpeed = animationView.speed
+
         // Create a ValueAnimator to animate the speed change
-        val valueAnimator = ValueAnimator.ofFloat(animationView.speed, 0.0f)
-        valueAnimator.duration = 4000 // 4 seconds
-        valueAnimator.addUpdateListener { animation ->
-            val animatedValue = animation.animatedValue as Float
-            animationView.setSpeed(animatedValue)
-            // Pause the animation when speed reaches 0
-            if (animatedValue == 0.0f) {
-                animationView.pauseAnimation()
+        slowdownAnimator = ValueAnimator.ofFloat(currentSpeed, 0.0f).apply {
+            duration = 4000 // 4 seconds
+            addUpdateListener { animation ->
+                val animatedValue = animation.animatedValue as Float
+                animationView.setSpeed(animatedValue)
+                // Pause the animation when speed reaches 0
+                if (animatedValue == 0.0f) {
+                    animationView.pauseAnimation()
+                }
             }
+            start()
         }
-        valueAnimator.start()
+    }
+
+    private fun accelerateAnimation(speed: Float) {
+        // Cancel any ongoing slowdown animation
+        slowdownAnimator?.cancel()
+
+        // Set the desired speed and start the animation if not already playing
+        animationView.speed = speed
+        if (!animationView.isAnimating) {
+            animationView.playAnimation()
+        }
     }
 }
