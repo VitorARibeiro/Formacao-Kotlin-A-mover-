@@ -1,5 +1,6 @@
 package com.example.acelerometerv1
 
+import android.animation.ValueAnimator
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.SeekBar
@@ -28,8 +29,8 @@ class MainActivity : AppCompatActivity() {
 
         //Remover o tremble do acelerador
         pointerSpeedometer.withTremble = false;
-        //esta linha esta a crashar o codigo
-        animationView.playAnimation()
+
+
 
 
         // Set a listener to the SeekBar to update the SpeedView and display the value
@@ -41,8 +42,13 @@ class MainActivity : AppCompatActivity() {
                 // Display the SeekBar value
                 seekBarValue.text = getString(R.string.seek_bar_value, progress)
 
+                if(progress != 0) {
+                    animationView.resumeAnimation()
+                    animationView.speed = (progress * 0.02).toFloat()
+                }else{
+                    pauseAnimationWithSlowdown()
 
-
+                }
 
 
             }
@@ -57,5 +63,20 @@ class MainActivity : AppCompatActivity() {
                 seekBar?.setProgress(0,true)
             }
         })
+    }
+
+    private fun pauseAnimationWithSlowdown() {
+        // Create a ValueAnimator to animate the speed change
+        val valueAnimator = ValueAnimator.ofFloat(animationView.speed, 0.0f)
+        valueAnimator.duration = 4000 // 4 seconds
+        valueAnimator.addUpdateListener { animation ->
+            val animatedValue = animation.animatedValue as Float
+            animationView.setSpeed(animatedValue)
+            // Pause the animation when speed reaches 0
+            if (animatedValue == 0.0f) {
+                animationView.pauseAnimation()
+            }
+        }
+        valueAnimator.start()
     }
 }

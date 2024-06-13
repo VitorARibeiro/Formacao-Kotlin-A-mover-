@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">AcelerometerV1</string>
-    <string name="seek_bar_value">Acceleration Value: %1$d</string>
+    <string name="seek_bar_value">Velocity Value: %1$d</string>
+    <string name="velocity_value_0">Velocity Value: 0</string>
 </resources>
 
