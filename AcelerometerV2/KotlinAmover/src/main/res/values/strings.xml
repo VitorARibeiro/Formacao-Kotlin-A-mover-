@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Teste</string>
+    <string name="decrease_button_name">Decelerate</string>
+    <string name="increase_button_name">Accelerate</string>
+</resources>
